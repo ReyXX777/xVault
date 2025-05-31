@@ -1,0 +1,9 @@
+[build]
+  command = "npm run build:ssr"
+  publish = "dist/secure-messenger/browser"
+  functions = "dist/secure-messenger/server"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

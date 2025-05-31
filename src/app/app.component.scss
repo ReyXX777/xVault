@@ -1,0 +1,374 @@
+// Variables
+$bg: #0a0a0f;
+$bg2: #1a1a2e;
+$card: rgba(22, 33, 62, 0.4);
+$border: rgba(79, 172, 254, 0.3);
+$text: #ffffff;
+$text2: #a0a9c0;
+$blue: #4facfe;
+$cyan: #00f2fe;
+$green: #00ff88;
+$glass: rgba(255, 255, 255, 0.05);
+
+// Mixins
+@mixin glass {
+  background: $glass;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@mixin glow($color) {
+  box-shadow: 0 0 10px rgba($color, 0.3);
+}
+
+// Base
+.secure-messenger-container {
+  min-height: 100vh;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(79, 172, 254, 0.1) 0%, transparent 50%),
+    linear-gradient(135deg, $bg 0%, $bg2 100%);
+  font-family: 'Segoe UI', sans-serif;
+  color: $text;
+  padding: 2rem;
+}
+
+// Header
+.header-section {
+  text-align: center;
+  margin-bottom: 3rem;
+  
+  .logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    
+    .shield-icon {
+      width: 60px;
+      height: 60px;
+      color: $blue;
+      @include glass;
+      @include glow($blue);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      svg { width: 36px; height: 36px; }
+    }
+    
+    .main-title {
+      font-size: 3rem;
+      font-weight: 700;
+      margin: 0;
+      background: linear-gradient(135deg, $blue, $cyan);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+  
+  .subtitle {
+    font-size: 1.2rem;
+    color: $text2;
+    margin: 0 0 1.5rem 0;
+  }
+  
+  .security-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    @include glass;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: $green;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+  }
+}
+
+// Content
+.messenger-content {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+// Inputs
+.input-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+  
+  .label-icon {
+    width: 18px;
+    height: 18px;
+    color: $blue;
+  }
+}
+
+.input-wrapper, .textarea-wrapper {
+  position: relative;
+  
+  .input-border {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    background: linear-gradient(135deg, $border, transparent) border-box;
+    mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    mask-composite: xor;
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+  
+  &:focus-within .input-border {
+    background: linear-gradient(135deg, $blue, $cyan) border-box;
+    @include glow($blue);
+  }
+}
+
+.secure-input, .secure-textarea {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  @include glass;
+  border: none;
+  border-radius: 12px;
+  background: $card;
+  color: $text;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+  
+  &::placeholder { color: $text2; }
+  &:focus { outline: none; background: rgba(22, 33, 62, 0.6); }
+}
+
+.secure-textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.5;
+}
+
+// Key Strength
+.key-strength {
+  margin-top: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  
+  .strength-meter {
+    flex: 1;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    
+    .strength-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: 3px;
+      transition: all 0.3s ease;
+      
+      &.very-weak { background: linear-gradient(90deg, #ff4757, #ff6b35); }
+      &.weak { background: linear-gradient(90deg, #ff6b35, #ffa726); }
+      &.moderate { background: linear-gradient(90deg, #ffa726, #ffca28); }
+      &.strong { background: linear-gradient(90deg, #ffca28, #66bb6a); }
+      &.very-strong { 
+        background: linear-gradient(90deg, #66bb6a, $green);
+        @include glow($green);
+      }
+    }
+  }
+  
+  .strength-text {
+    font-size: 0.8rem;
+    font-weight: 500;
+    min-width: 80px;
+    text-align: right;
+    color: $text2;
+  }
+}
+
+// Character Counter
+.char-counter {
+  position: absolute;
+  bottom: 0.75rem;
+  right: 1rem;
+  font-size: 0.8rem;
+  color: $text2;
+  pointer-events: none;
+}
+
+// Buttons
+.action-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.action-btn {
+  position: relative;
+  padding: 1rem 1.5rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  @include glass;
+  
+  .btn-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 2;
+    
+    .btn-icon { width: 20px; height: 20px; }
+  }
+  
+  .btn-shimmer {
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+  }
+  
+  &:hover {
+    transform: translateY(-2px);
+    .btn-shimmer { left: 100%; }
+  }
+}
+
+.encrypt-btn {
+  background: linear-gradient(135deg, $blue, #3b82f6);
+  color: white;
+  &:hover { @include glow($blue); }
+}
+
+.decrypt-btn {
+  background: linear-gradient(135deg, $cyan, #06b6d4);
+  color: white;
+  &:hover { @include glow($cyan); }
+}
+
+// Output
+.output-textarea {
+  background: rgba(10, 10, 15, 0.6);
+  border: 1px solid $border;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  padding-bottom: 3rem;
+}
+
+.output-actions {
+  position: absolute;
+  bottom: 0.75rem;
+  right: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.copy-btn, .clear-btn {
+  padding: 0.5rem;
+  border: none;
+  background: $glass;
+  color: $text2;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  transition: all 0.3s ease;
+  
+  svg { width: 14px; height: 14px; }
+  
+  &:hover {
+    background: $border;
+    color: $text;
+    transform: translateY(-1px);
+  }
+}
+
+// Security Footer
+.security-footer {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid $border;
+  
+  .security-features {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    
+    .feature {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: $text2;
+      font-size: 0.9rem;
+      
+      svg {
+        width: 16px;
+        height: 16px;
+        color: $green;
+      }
+    }
+  }
+}
+// Creator Footer
+.creator-footer {
+  margin-top: 2rem;
+  padding: 1.5rem 0;
+  text-align: center;
+  border-top: 1px solid $border;
+  
+  p {
+    color: $text2;
+    font-size: 0.9rem;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    margin: 0;
+  }
+}
+
+// Animations
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.1); }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .secure-messenger-container { padding: 1rem; }
+  .header-section .logo-container .main-title { font-size: 2.5rem; }
+  .action-section { grid-template-columns: 1fr; }
+  .security-features { flex-direction: column; align-items: center; gap: 1rem !important; }
+}
+
+@media (max-width: 480px) {
+  .header-section .logo-container {
+    flex-direction: column;
+    gap: 0.5rem;
+    .main-title { font-size: 2rem; }
+  }
+  .messenger-content { gap: 1.5rem; }
+}
