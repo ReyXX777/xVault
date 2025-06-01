@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: xVault
+    runtime: node # ✅ Required field
+    buildCommand: |
+      npm install -g @angular/cli
+      npm install
+      ng build && ng run secure-messenger:server
+    startCommand: node dist/secure-messenger/server/server.mjs
+    plan: free # Optional: explicitly state the Render plan
+    branch: deploy-c08ab42 # Optional: specify the branch to deploy
+    autoDeploy: true # Optional: auto-deploy on new commits
