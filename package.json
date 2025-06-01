@@ -11,7 +11,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:secure-messenger": "node dist/secure-messenger/server/server.mjs",
+    
     "build:ssr": "ng build && ng run secure-messenger:server",
     "serve:ssr": "node dist/secure-messenger/server/main.js",
     "prerender": "ng run secure-messenger:prerender"
