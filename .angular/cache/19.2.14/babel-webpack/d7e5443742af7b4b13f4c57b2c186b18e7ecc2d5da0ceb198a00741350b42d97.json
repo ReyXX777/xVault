@@ -1,0 +1,1 @@
+{"ast":null,"code":"import { RenderMode } from '@angular/ssr';\nexport const serverRoutes = [{\n  path: '**',\n  renderMode: RenderMode.Prerender\n}];","map":null,"metadata":{},"sourceType":"module","externalDependencies":[]}
