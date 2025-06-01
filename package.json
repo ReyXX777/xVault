@@ -6,23 +6,19 @@
     "src/assets"
   ],
   "scripts": {
-  "ng": "ng",
-  "start": "ng serve",
-  "build": "ng build",
-  "watch": "ng build --watch --configuration development",
-  "test": "ng test",
-
-  "fix-permissions": "chmod +x ./node_modules/.bin/ng",
-
-  "build:ssr": "npm run fix-permissions && npx ng build && npx ng run secure-messenger:server",
-  "serve:ssr": "node dist/secure-messenger/server/main.js",
-  "prerender": "ng run secure-messenger:prerender"
-},
-
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "fix-permissions": "chmod +x ./node_modules/.bin/ng",
+    "build:ssr": "npm run fix-permissions && npx ng build && npx ng run secure-messenger:server",
+    "serve:ssr": "node dist/secure-messenger/server/main.js",
+    "prerender": "ng run secure-messenger:prerender"
+  },
   "private": true,
   "dependencies": {
     "@angular/common": "^19.2.0",
-      
     "@angular/compiler": "^19.2.0",
     "@angular/core": "^19.2.0",
     "@angular/forms": "^19.2.0",
@@ -33,6 +29,7 @@
     "@angular/ssr": "^19.2.14",
     "@nguniversal/express-engine": "^7.0.2",
     "crypto-js": "^4.2.0",
+    "dotenv": "^16.5.0",
     "express": "^4.18.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
@@ -44,6 +41,7 @@
     "@angular/compiler-cli": "^19.2.0",
     "@netlify/angular-runtime": "^2.4.0",
     "@types/crypto-js": "^4.2.2",
+    "@types/dotenv": "^6.1.1",
     "@types/express": "^4.17.17",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^18.18.0",

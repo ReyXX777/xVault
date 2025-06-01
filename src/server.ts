@@ -8,7 +8,9 @@ import { getContext } from '@netlify/angular-runtime/context.mjs'
 const app = express()
 const angularAppEngine = new AngularAppEngine()
 
-const PORT = process.env['PORT'] || 5000  // <-- fixed here
+app.use(express.text({ type: '*/*' }))  // parse all incoming bodies as text
+
+const PORT = process.env['PORT'] || 5000
 
 app.get('*', async (req, res) => {
   try {
@@ -16,7 +18,7 @@ app.get('*', async (req, res) => {
     const fetchRequest = new Request(url, {
       method: req.method,
       headers: req.headers as any,
-      body: req.method === 'GET' || req.method === 'HEAD' ? null : req,
+      body: req.method === 'GET' || req.method === 'HEAD' ? null : req.body,
       redirect: 'manual'
     })
 
