@@ -1,22 +1,48 @@
-import { AngularAppEngine, createRequestHandler } from '@angular/ssr'
+import dotenv from 'dotenv'
+dotenv.config()
+
+import express from 'express'
+import { AngularAppEngine } from '@angular/ssr'
 import { getContext } from '@netlify/angular-runtime/context.mjs'
 
+const app = express()
 const angularAppEngine = new AngularAppEngine()
 
-export async function netlifyAppEngineHandler(request: Request): Promise<Response> {
-  const context = getContext()
+const PORT = process.env['PORT'] || 5000  // <-- fixed here
 
-  // Define API endpoints here if needed:
-  // const pathname = new URL(request.url).pathname;
-  // if (pathname === '/api/hello') {
-  //   return Response.json({ message: 'Hello from the API' });
-  // }
+app.get('*', async (req, res) => {
+  try {
+    const url = req.protocol + '://' + req.get('host') + req.originalUrl
+    const fetchRequest = new Request(url, {
+      method: req.method,
+      headers: req.headers as any,
+      body: req.method === 'GET' || req.method === 'HEAD' ? null : req,
+      redirect: 'manual'
+    })
 
-  const result = await angularAppEngine.handle(request, context)
-  return result || new Response('Not found', { status: 404 })
-}
+    const context = getContext()
+    const response = await angularAppEngine.handle(fetchRequest, context)
 
-/**
- * The request handler used by the Angular CLI (dev-server and during build).
- */
-export const reqHandler = createRequestHandler(netlifyAppEngineHandler)
+    if (!response) {
+      res.status(404).send('Not found')
+      return
+    }
+
+    res.status(response.status)
+
+    response.headers.forEach((value, key) => {
+      res.setHeader(key, value)
+    })
+
+    const responseBody = await response.text()
+    res.send(responseBody)
+
+  } catch (err) {
+    console.error('SSR error:', err)
+    res.status(500).send('Internal Server Error')
+  }
+})
+
+app.listen(PORT, () => {
+  console.log(`Server listening on http://localhost:${PORT}`)
+})
