@@ -3,13 +3,16 @@
   "compilerOptions": {
     "outDir": "./dist/server",
     "target": "ES2022",
-    "types": [],
-    "module": "es2020"
+    "module": "es2020",
+    "types": [
+      "node"
+    ]
   },
   "files": [
-    "src/main.server.ts"
+    "src/main.server.ts",
+    "src/server.ts"
   ],
-  "angularCompilerOptions": {
-    "entryModule": "src/app/app.server.module#AppServerModule"
-  }
+  "include": [
+    "src/**/*.server.ts"
+  ]
 }
