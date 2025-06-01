@@ -3,53 +3,62 @@ dotenv.config()
 
 import express from 'express'
 import { AngularAppEngine } from '@angular/ssr'
-import { getContext } from '@netlify/angular-runtime/context.mjs'
+import { join } from 'path'
 
 const app = express()
 const angularAppEngine = new AngularAppEngine()
 
-app.use(express.text({ type: '*/*' }))  // parse all incoming bodies as text
-
 const PORT = process.env['PORT'] || 4000
+const DIST_FOLDER = join(process.cwd(), 'dist', 'secure-messenger')
 
-// Add a simple root endpoint for quick health check
-app.get('/', (req, res) => {
-  res.send('Server is running')
+// Serve static files from browser folder
+app.use(express.static(join(DIST_FOLDER, 'browser')))
+
+// Add a simple health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ status: 'Server is running', port: PORT })
 })
 
-app.get('*', async (req, res) => {
+// Handle all other routes with Angular SSR
+app.get('*', async (req, res, next) => {
   try {
-    const url = req.protocol + '://' + req.get('host') + req.originalUrl
-    const fetchRequest = new Request(url, {
+    // Create the request URL
+    const url = new URL(req.originalUrl, `${req.protocol}://${req.get('host')}`)
+    
+    // Create a proper Request object for Angular SSR
+    const request = new Request(url.toString(), {
       method: req.method,
-      headers: req.headers as any,
-      body: req.method === 'GET' || req.method === 'HEAD' ? null : req.body,
-      redirect: 'manual'
+      headers: new Headers(req.headers as Record<string, string>),
     })
 
-    const context = getContext()
-    const response = await angularAppEngine.handle(fetchRequest, context)
+    // Handle the request with Angular SSR engine
+    const response = await angularAppEngine.handle(request)
 
     if (!response) {
-      res.status(404).send('Not found')
-      return
+      return res.status(404).send('Page not found')
     }
 
+    // Set status and headers
     res.status(response.status)
-
-    response.headers.forEach((value, key) => {
+    
+    // Copy headers from Angular response
+    for (const [key, value] of response.headers.entries()) {
       res.setHeader(key, value)
-    })
+    }
 
-    const responseBody = await response.text()
-    res.send(responseBody)
+    // Send the response body
+    const body = await response.text()
+    res.send(body)
 
-  } catch (err) {
-    console.error('SSR error:', err)
+  } catch (error) {
+    console.error('SSR Error:', error)
     res.status(500).send('Internal Server Error')
   }
 })
 
-app.listen(PORT, () => {
+// Start the server
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server listening on port ${PORT}`)
 })
+
+export default app
