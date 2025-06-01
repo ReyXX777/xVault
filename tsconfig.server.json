@@ -2,9 +2,9 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/server",
-    "target": "es2019",
+    "target": "ES2022",
     "types": [],
-    "module": "commonjs"
+    "module": "es2020"
   },
   "files": [
     "src/main.server.ts"
