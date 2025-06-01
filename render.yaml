@@ -3,7 +3,8 @@ services:
     name: xVault
     runtime: node
     buildCommand: |
-      npm install
+      npm install --include=dev
+      npm run fix-permissions
       npx ng build
       npx ng run secure-messenger:server
     startCommand: node dist/secure-messenger/server/server.mjs
