@@ -8,7 +8,8 @@ import { join } from 'path'
 const app = express()
 const angularAppEngine = new AngularAppEngine()
 
-const PORT = process.env['PORT'] || 4000
+// Ensure PORT is a number
+const PORT = parseInt(process.env['PORT'] || '4000', 10)
 const DIST_FOLDER = join(process.cwd(), 'dist', 'secure-messenger')
 
 // Serve static files from browser folder
@@ -20,7 +21,7 @@ app.get('/health', (req, res) => {
 })
 
 // Handle all other routes with Angular SSR
-app.get('*', async (req, res, next) => {
+app.get('*', async (req, res) => {
   try {
     // Create the request URL
     const url = new URL(req.originalUrl, `${req.protocol}://${req.get('host')}`)
@@ -35,7 +36,8 @@ app.get('*', async (req, res, next) => {
     const response = await angularAppEngine.handle(request)
 
     if (!response) {
-      return res.status(404).send('Page not found')
+      res.status(404).send('Page not found')
+      return
     }
 
     // Set status and headers
@@ -57,7 +59,7 @@ app.get('*', async (req, res, next) => {
 })
 
 // Start the server
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`)
 })
 
