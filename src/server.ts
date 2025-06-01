@@ -44,9 +44,9 @@ app.get('*', async (req, res) => {
     res.status(response.status)
     
     // Copy headers from Angular response
-    for (const [key, value] of response.headers.entries()) {
+    response.headers.forEach((value, key) => {
       res.setHeader(key, value)
-    }
+    })
 
     // Send the response body
     const body = await response.text()
