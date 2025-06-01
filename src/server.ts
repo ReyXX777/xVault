@@ -10,7 +10,12 @@ const angularAppEngine = new AngularAppEngine()
 
 app.use(express.text({ type: '*/*' }))  // parse all incoming bodies as text
 
-const PORT = process.env['PORT'] || 5000
+const PORT = process.env['PORT'] || 4000
+
+// Add a simple root endpoint for quick health check
+app.get('/', (req, res) => {
+  res.send('Server is running')
+})
 
 app.get('*', async (req, res) => {
   try {
@@ -46,5 +51,5 @@ app.get('*', async (req, res) => {
 })
 
 app.listen(PORT, () => {
-  console.log(`Server listening on http://localhost:${PORT}`)
+  console.log(`Server listening on port ${PORT}`)
 })
